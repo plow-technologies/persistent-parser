@@ -1,27 +1,36 @@
+{-|
+Module      : Database.Persist.Internal.Parser.Types
+Description : Persistent model file parsing functions
+Copyright   : (c) James M.C. Haver II
+License     : BSD3
+Maintainer  : mchaver@gmail.com
+Stability   : Beta
+-}
+
 {-# LANGUAGE DeriveGeneric #-}
 
-
-module Database.Persist.Parser.Types where
+module Database.Persist.Internal.Parser.Types where
 
 import           Data.Text (Text)
+import           GHC.Generics
 
 -- | A collection of data types with which you can recontruct a Persist Model file
 -- | or create an altered version.
-type PersistModelFile = [PersistModelFilePiece]
+type ModelsFile = [ModelsFilePiece]
 
--- | Top level pieces of a Persist Model file.
-data PersistModelFilePiece = PersistModelFileEntity     Entity     |
-                             PersistModelFileComment    Comment    |
-                             PersistModelFileWhiteSpace WhiteSpace
-  deriving (Eq,Read,Show)
+-- | Top level pieces of a Model file.
+data ModelsFilePiece = ModelsFileEntity     Entity     |
+                       ModelsFileComment    Comment    |
+                       ModelsFileWhiteSpace WhiteSpace
+  deriving (Eq,Read,Show,Generic)
 
 -- | A single Persist Model Entity.
 data Entity = Entity {
-  _getEntityName      :: Text
-, _isEntityDeriveJson :: Bool          -- | Person json
-, _getEntitySqlTable  :: Maybe Text    -- | Person sql=peoples
-, _getEntityChildren  :: [EntityChild]
-} deriving (Eq,Read,Show)
+  entityName       :: Text
+, entityDeriveJson :: Bool          -- | Person json
+, entitySqlTable   :: Maybe Text    -- | Person sql=peoples
+, entityChildren   :: [EntityChild]
+} deriving (Eq,Read,Show,Generic)
 
 
 -- | All of the child elements of a Persist Model Entity.
@@ -33,19 +42,19 @@ data EntityChild = EntityChildEntityField   EntityField   |
                    EntityChildEntityForeign EntityForeign |
                    EntityChildComment       Comment       |
                    EntityChildWhiteSpace    WhiteSpace
-  deriving (Eq,Read,Show)
+  deriving (Eq,Read,Show,Generic)
 
 -- | A data row from an Entity.
 data EntityField = EntityField {
-  _getEntityFieldName         :: Text
-, _getEntityFieldType         :: EntityFieldType
-, _isEntityFieldMigrationOnly :: Bool  -- | MigrationOnly
-, _isEntityFieldSafeToRemove  :: Bool  -- | SafeToRemove
-, _getEntityFieldDefault      :: Maybe Text -- | default=Nothing, default=now(), default=CURRENT_DATE
-, _getEntityFieldSqlRow       :: Maybe Text -- | sql=my_id_name
-, _getEntityFieldSqlType      :: Maybe Text -- | sqltype=varchar(255)
-, _getEntityFieldMaxLen       :: Maybe Int
-}  deriving (Eq,Read,Show)
+  entityFieldName            :: Text
+, entityFieldType            :: EntityFieldType
+, entityFieldIsMigrationOnly :: Bool  -- | MigrationOnly
+, entityFieldIsSafeToRemove  :: Bool  -- | SafeToRemove
+, entityFieldDefault         :: Maybe Text -- | default=Nothing, default=now(), default=CURRENT_DATE
+, entityFieldSqlRow          :: Maybe Text -- | sql=my_id_name
+, entityFieldSqlType         :: Maybe Text -- | sqltype=varchar(255)
+, entityFieldMaxLen          :: Maybe Int
+}  deriving (Eq,Read,Show,Generic)
 
 
 -- | Table rows can be strict or lazy
@@ -56,62 +65,70 @@ data Strictness
   | ExplicitStrict
   -- | "~" means that a type is Lazy
   | Lazy
-  deriving (Eq,Show,Read)
+  deriving (Eq,Show,Read,Generic)
+
 -- | An entity data row's type. If '_isEntityFieldTypeList' is 'True' than this type is a list.
 data EntityFieldType = EntityFieldType {
-  _getEntityFieldTypeText   :: Text
-, _getEntityFieldStrictness :: Strictness
-, _isEntityFieldTypeList    :: Bool
-, _isEntityFieldTypeMaybe   :: Bool
-} deriving (Eq,Read,Show)
+  entityFieldTypeText   :: Text
+, entityFieldStrictness :: Strictness
+, entityFieldTypeList   :: Bool
+, entityFieldTypeMaybe  :: Bool
+} deriving (Eq,Read,Show,Generic)
 
 
 -- | A unique idenfitier for an Entity.
 data EntityUnique = EntityUnique {
-  _getEntityUniqueName            ::  Text
-, _getEntityUniqueEntityFieldName ::  [Text]
-} deriving (Eq,Show,Read)
+  entityUniqueName            ::  Text
+, entityUniqueEntityFieldName ::  [Text]
+} deriving (Eq,Show,Read,Generic)
 
 -- | 'deriving Eq', 'deriving Show', etc.
 -- | There may be custom generic typeclasses
 -- | so there is no restriction on what the type might be
 -- | , other than it starts with a capital letter.
 data EntityDerive = EntityDerive {
-  _getEntityDeriveTypes :: [Text]
-} deriving (Eq,Show,Read)
+  entityDeriveTypes :: [Text]
+} deriving (Eq,Show,Read,Generic)
 
 -- | 'Primary name'
 data EntityPrimary = EntityPrimary {
-  _getEntityPrimeType :: [Text]
-} deriving (Eq,Show,Read)
+  entityPrimaryType :: [Text]
+} deriving (Eq,Show,Read,Generic)
 
 -- | 'Foreign Tree fkparent parent'
+{-|
+Module      : Database.Persist.Parser.Types
+Description : Persistent model file parsing functions
+Copyright   : (c) James M.C. Haver II
+License     : BSD3
+Maintainer  : mchaver@gmail.com
+Stability   : Beta
+-}
+
 data EntityForeign = EntityForeign {
-  _getEntityForeignTable :: Text
-, _getEntityForeignTypes :: [Text]
-} deriving (Eq,Show,Read)
+  entityForeignTable :: Text
+, entityForeignTypes :: [Text]
+} deriving (Eq,Show,Read,Generic)
 
 -- | Any white spaces that the user might want to maintain when generating Audit Models.
 data WhiteSpace = WhiteSpace {
-  _getWhiteSpace :: Text
-} deriving (Eq,Show,Read)
+  whiteSpace :: Text
+} deriving (Eq,Show,Read,Generic)
 
 -- | Haskell style comments that start with "-- "
 data Comment = Comment {
-  _getComment :: Text
-} deriving (Eq,Show,Read)
-
-
+  comment :: Text
+} deriving (Eq,Show,Read,Generic)
 
 data MigrationOnlyAndSafeToRemoveOption = MigrationOnly
                                         | SafeToRemove
-  deriving (Eq,Read,Show)
+  deriving (Eq,Read,Show,Generic)
 
 data EntityFieldLastItem = FieldDefault Text
                          | FieldSqlRow  Text
                          | FieldSqlType Text
                          | FieldMaxLen  Int
-  deriving (Read,Show)
+  deriving (Read,Show,Generic)
 
 instance Eq EntityFieldLastItem where
   (FieldDefault  _) == (FieldDefault  _) = True

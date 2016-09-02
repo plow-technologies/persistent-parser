@@ -8,6 +8,7 @@ module Database.Persist.ParserSpec (
 
 import           Data.Attoparsec.Text
 import           Data.Either
+import           Database.Persist.Internal.Parser
 import           Database.Persist.Parser
 import           Test.Hspec
 
@@ -194,21 +195,21 @@ spec = do
       let parseResult = parseOnly parseEntityField sampleEntityField
       parseResult `shouldBe` (Right ef)
 
-    it "Should parse a well formed entity field with list type" $ do
+    it "Should parse a well formed entity field with a list type" $ do
       let sampleEntityField = "  ident [Text]"
       let eft = EntityFieldType "Text" Strict True False
       let ef  = EntityField "ident" eft  False False Nothing Nothing Nothing Nothing
       let parseResult = parseOnly parseEntityField sampleEntityField
       parseResult `shouldBe` (Right ef)
 
-    it "Should parse a well formed entity field with maybe type" $ do
+    it "Should parse a well formed entity field with a maybe type" $ do
       let sampleEntityField = "  ident Text Maybe"
       let eft = EntityFieldType "Text" Strict False True
       let ef  = EntityField "ident" eft  False False Nothing Nothing Nothing Nothing
       let parseResult = parseOnly parseEntityField sampleEntityField
       parseResult `shouldBe` (Right ef)
 
-    it "Should parse a well formed entity field with maybe list type" $ do
+    it "Should parse a well formed entity field with a maybe list type" $ do
       let sampleEntityField = "  ident [Text] Maybe"
       let eft = EntityFieldType "Text" Strict True True
       let ef  = EntityField "ident" eft  False False Nothing Nothing Nothing Nothing
@@ -216,7 +217,7 @@ spec = do
       parseResult `shouldBe` (Right ef)
 
 
-    it "Should parse an entity field with explicit strict type" $ do
+    it "Should parse an entity field with explicit a strict type" $ do
       let sampleEntityField = "  ident !Text"
       let eft = EntityFieldType "Text" ExplicitStrict False False
       let ef  = EntityField "ident" eft  False False Nothing Nothing Nothing Nothing
@@ -236,6 +237,9 @@ spec = do
       let ef  = EntityField "ident" eft  False False Nothing Nothing Nothing Nothing
       let parseResult = parseOnly parseEntityField sampleEntityField
       parseResult `shouldBe` (Right ef)
+
+  -- describe "parseModelsFile"
+  -- describe "parseQuasiQuotersFile"
 
 main :: IO ()
 main = hspec spec
