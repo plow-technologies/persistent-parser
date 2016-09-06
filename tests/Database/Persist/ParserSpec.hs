@@ -9,7 +9,7 @@ module Database.Persist.ParserSpec (
 import           Data.Attoparsec.Text
 import           Data.Either
 import           Database.Persist.Internal.Parser
-import           Database.Persist.Parser
+import           Database.Persist.Syntax.Types
 import           Test.Hspec
 
 spec :: Spec

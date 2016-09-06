@@ -10,8 +10,6 @@ Stability   : Beta
 module Database.Persist.Parser (
     parseModelsFile
   , parseQuasiQuotersFile
-  , module Database.Persist.Internal.Parser.Types
   ) where
 
 import Database.Persist.Internal.Parser
-import Database.Persist.Internal.Parser.Types
