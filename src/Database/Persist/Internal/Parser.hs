@@ -65,7 +65,7 @@ parseEntities = do
 parseEntity :: Parser Entity
 parseEntity = do
 
-  entityName <- haskellTypeNameWithoutPrefix
+  entityNam <- haskellTypeNameWithoutPrefix
   _ <- many' spaceNoNewLine
   derivesJson <- (string "json" *> pure True) <|> pure False
   _ <- many' spaceNoNewLine
@@ -73,7 +73,7 @@ parseEntity = do
   _ <- takeTill isEndOfLine
   endOfLine <|> endOfInput
 
-  entityChildren <- many' ( EntityChildEntityField   <$> parseEntityField
+  entityChildrn <- many' ( EntityChildEntityField   <$> parseEntityField
                         <|> EntityChildEntityDerive  <$> parseEntityDerive
                         <|> EntityChildEntityPrimary <$> parseEntityPrimary
                         <|> EntityChildEntityForeign <$> parseEntityForeign
@@ -81,7 +81,7 @@ parseEntity = do
                         <|> EntityChildWhiteSpace    <$> collectWhiteSpace
                         <|> EntityChildComment       <$> singleLineComment)
 
-  return $ Entity entityName derivesJson mSqlTable entityChildren
+  return $ Entity entityNam derivesJson mSqlTable entityChildrn
 
 -- | Parse the user defined SQL table name.
 parseEntitySqlTable :: Parser Text
@@ -158,16 +158,16 @@ haskellTypeNameWithoutPrefix = do
 singleLineComment :: Parser Comment
 singleLineComment = do
   _ <- string "--"
-  comment <- takeTill isEndOfLine
+  commnt <- takeTill isEndOfLine
   endOfLine
-  return $ Comment ("--" <> comment <> "\n")
+  return $ Comment ("--" <> commnt <> "\n")
 
 -- | Parse and collect white space.
 collectWhiteSpace :: Parser WhiteSpace
 collectWhiteSpace = do
-  whiteSpace <- takeWhile (\x -> isSpace x && not (isEndOfLine x))
+  whiteSpac <- takeWhile (\x -> isSpace x && not (isEndOfLine x))
   endOfLine
-  return $ WhiteSpace (whiteSpace <> "\n")
+  return $ WhiteSpace (whiteSpac <> "\n")
 
 
 -- | Parse and collect an Entity name.
