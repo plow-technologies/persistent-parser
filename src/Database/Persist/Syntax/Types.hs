@@ -1,5 +1,5 @@
 {-|
-Module      : Database.Persist.Internal.Syntax.Types
+Module      : Database.Persist.Syntax.Types
 Description : Syntax tree for representing elements in Persistent model files
 Copyright   : (c) James M.C. Haver II
 License     : BSD3
